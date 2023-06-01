@@ -12,7 +12,12 @@ struct TodoController: RouteCollection {
     }
 
     func index(req: Request) async throws -> [Todo] {
-        try await Todo.query(on: req.db).all()
+        
+        let x = try await Todo.query(on: req.db)
+            .join(User.self, on: \Todo.$user.$id == \User.$id)
+            .all()
+        
+        return try await Todo.query(on: req.db).all()
     }
 
     func create(req: Request) async throws -> Todo {
